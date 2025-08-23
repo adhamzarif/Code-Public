@@ -1,22 +1,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int minMoves(vector<int> &A)
+int minMoves(vector<int> &arr)
 {
-    sort(A.begin(), A.end());
+    sort(arr.begin(), arr.end());
+    int n = arr.size();
     int moves = 0;
-    int n = A.size();
+
     for (int i = 0; i < n;)
     {
-        if (i + 1 < n && A[i + 1] - A[i] <= 2)
+        if (i + 1 < n && arr[i + 1] - arr[i] <= 2)
         {
+            moves++;
             i += 2;
         }
         else
         {
-            i += 1;
+            moves++;
+            i++;
         }
-        moves++;
     }
     return moves;
 }
@@ -24,6 +26,6 @@ int minMoves(vector<int> &A)
 int main()
 {
     vector<int> A = {1, 3, 5, 9};
-    cout << minMoves(A) << endl;
+    cout << minMoves(A) << "\n";
     return 0;
 }

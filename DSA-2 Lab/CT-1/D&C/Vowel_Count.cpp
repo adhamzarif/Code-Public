@@ -1,44 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-bool isVowel(char ch)
+bool isVowel(char c)
 {
-    ch = tolower(ch);
-    return (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u');
+    c = tolower(c);
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
 }
-int countVowels(string &s, int left, int right)
+
+int countVowels(string &s, int l, int r)
 {
-    if (left == right)
+    if (l == r)
     {
-        if (isVowel(s[left]))
-            return 1;
-        else
-            return 0;
+        return isVowel(s[l]) ? 1 : 0;
     }
 
-    int mid = (left + right) / 2;
+    int mid = (l + r) / 2;
 
-    int leftCount = countVowels(s, left, mid);
-    int rightCount = countVowels(s, mid + 1, right);
+    int leftCount = countVowels(s, l, mid);
+    int rightCount = countVowels(s, mid + 1, r);
 
     return leftCount + rightCount;
 }
 
 int main()
 {
-    string str;
-    cout << "Enter a string: ";
-    getline(cin, str);
+    string s = "DivideAndConquer";
+    int total = countVowels(s, 0, s.size() - 1);
 
-    if (str.empty())
-    {
-        cout << "No vowels in the string." << endl;
-        return 0;
-    }
-
-    int totalVowels = countVowels(str, 0, str.size() - 1);
-
-    cout << "Total vowels in the string: " << totalVowels << endl;
+    cout << "Total vowels = " << total << "\n";
 
     return 0;
 }

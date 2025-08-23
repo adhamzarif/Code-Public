@@ -1,37 +1,40 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-pair<int, int> findLargestPair(int arr[], int left, int right)
+pair<int, int> largestPair(vector<int> &arr, int l, int r)
 {
-    if (left == right)
+    if (l == r)
     {
-        return {arr[left], INT_MIN};
+        return {arr[l], INT_MIN};
+    }
+    if (l + 1 == r)
+    {
+        if (arr[l] > arr[r])
+        {
+            return {arr[l], arr[r]};
+        }
+        else
+        {
+            return {arr[r], arr[l]};
+        }
     }
 
-    int mid = (left + right) / 2;
-    pair<int, int> leftPair;
-    leftPair = findLargestPair(arr, left, mid);
+    int mid = (l + r) / 2;
 
-    pair<int, int> rightPair;
-    rightPair = findLargestPair(arr, mid + 1, right);
+    pair<int, int> left = largestPair(arr, l, mid);
+    pair<int, int> right = largestPair(arr, mid + 1, r);
 
-    vector<int> candidates = {leftPair.first, leftPair.second, rightPair.first, rightPair.second};
-
-    sort(candidates.begin(), candidates.end(), greater<int>());
-
+    vector<int> candidates = {left.first, left.second, right.first, right.second};
+    sort(candidates.rbegin(), candidates.rend());
     return {candidates[0], candidates[1]};
 }
 
 int main()
 {
-    int arr[] = {12, 5, 7, 25, 19, 30, 18};
-    int n = sizeof(arr) / sizeof(arr[0]);
+    vector<int> arr = {5, 1, 9, 7, 3, 8};
+    pair<int, int> result = largestPair(arr, 0, arr.size() - 1);
 
-    pair<int, int> result;
-    result = findLargestPair(arr, 0, n - 1);
-
-    cout << "Largest pair in the array: "
-         << result.first << " and " << result.second << endl;
+    cout << "Largest pair: " << result.first << " and " << result.second << "\n";
 
     return 0;
 }

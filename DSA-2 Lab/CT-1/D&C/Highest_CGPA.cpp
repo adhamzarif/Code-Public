@@ -8,34 +8,35 @@ struct Student
     double cgpa;
 };
 
-Student findTopper(vector<Student> &students)
+Student maxCgpaStudent(vector<Student> &students, int l, int r)
 {
-    Student topper = students[0];
-
-    for (int i = 1; i < students.size(); i++)
+    if (l == r)
     {
-        if (students[i].cgpa > topper.cgpa)
-        {
-            topper = students[i];
-        }
+        return students[l];
     }
-    return topper;
+
+    int mid = (l + r) / 2;
+
+    Student leftMax = maxCgpaStudent(students, l, mid);
+    Student rightMax = maxCgpaStudent(students, mid + 1, r);
+
+    return (leftMax.cgpa >= rightMax.cgpa) ? leftMax : rightMax;
 }
 
 int main()
 {
     vector<Student> students = {
-        {"Alice", 101, 3.6},
-        {"Bob", 102, 3.9},
-        {"Charlie", 103, 3.7},
-        {"David", 104, 3.8}};
+        {"A", 101, 3.5},
+        {"B", 102, 3.8},
+        {"C", 103, 3.2},
+        {"D", 104, 3.9},
+        {"E", 105, 3.7}};
 
-    Student topper = findTopper(students);
+    Student topStudent = maxCgpaStudent(students, 0, students.size() - 1);
 
-    cout << "Topper Details:\n";
-    cout << "Name: " << topper.name << "\n";
-    cout << "ID: " << topper.id << "\n";
-    cout << "CGPA: " << topper.cgpa << endl;
+    cout << "Student with highest CGPA:\n";
+    cout << "Name: " << topStudent.name << ", ID: " << topStudent.id
+         << ", CGPA: " << topStudent.cgpa << "\n";
 
     return 0;
 }

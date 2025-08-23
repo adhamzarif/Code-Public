@@ -1,49 +1,59 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> maxNonNegativeSubarray(vector<int> &arr)
+int maxCrossingSum(vector<int> &arr, int l, int m, int r)
 {
-    long long maxSum = -1, currSum = 0;
-    vector<int> result, temp;
-
-    for (int i = 0; i < arr.size(); i++)
+    int leftSum = 0, sum = 0;
+    for (int i = m; i >= l; i--)
     {
-        if (arr[i] >= 0)
+        if (arr[i] < 0)
         {
-            currSum += arr[i];
-            temp.push_back(arr[i]);
+            break;
         }
-        else
-        {
-            if (currSum > maxSum)
-            {
-                maxSum = currSum;
-                result = temp;
-            }
-            currSum = 0;
-            temp.clear();
-        }
+        sum += arr[i];
+        leftSum = max(leftSum, sum);
     }
 
-    if (currSum > maxSum)
+    int rightSum = 0;
+    sum = 0;
+    for (int i = m + 1; i <= r; i++)
     {
-        result = temp;
+        if (arr[i] < 0)
+        {
+            break;
+        }
+        sum += arr[i];
+        rightSum = max(rightSum, sum);
     }
 
-    return result;
+    return leftSum + rightSum;
+}
+
+int maxNonNegativeSum(vector<int> &arr, int l, int r)
+{
+    if (l > r)
+    {
+        return 0;
+    }
+
+    if (l == r)
+    {
+        return max(0, arr[l]);
+    }
+
+    int m = (l + r) / 2;
+
+    int leftMax = maxNonNegativeSum(arr, l, m);
+    int rightMax = maxNonNegativeSum(arr, m + 1, r);
+    int crossMax = maxCrossingSum(arr, l, m, r);
+
+    return max({leftMax, rightMax, crossMax});
 }
 
 int main()
 {
-    vector<int> arr = {1, 2, 5, -7, 2, 3};
-    vector<int> ans = maxNonNegativeSubarray(arr);
-
-    cout << "Maximum sum non-negative subarray: ";
-    for (int x : ans)
-    {
-        cout << x << " ";
-    }
-    cout << endl;
-
+    vector<int> arr = {1, 2, -3, 4, 5, 6, -1, 2, 3};
+    int result = maxNonNegativeSum(arr, 0, arr.size() - 1);
+    cout << "Maximum sum of non-negative contiguous subarray = " << result << "\n";
     return 0;
 }
