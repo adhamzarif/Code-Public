@@ -1,61 +1,71 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-class Item{
-public:
-    string name;
-    double weight, value, per_unit_value;
-    Item(string n, double w, double v): name(n), weight(w),
-                                        value(v), per_unit_value(v/w){}
-    void display(){
-        cout<<"name:"<<name<<" w:"<<weight<<" v:"<<value
-                                    <<" unit value:"<<per_unit_value<<endl;
+void FractionalKnapsack(vector<pair<string, pair<double, double>>> items, int W)
+{
+    // sort by unit value using lambda
+    sort(items.begin(), items.end(), [](auto &a, auto &b)
+         {
+        double unitA = a.second.second / a.second.first; // value / weight
+        double unitB = b.second.second / b.second.first;
+        return unitA > unitB; });
+
+    cout << "Sorted items (by unit value):" << endl;
+    for (auto i : items)
+    {
+        double unit = i.second.second / i.second.first;
+        cout << "name:" << i.first
+             << " w:" << i.second.first
+             << " v:" << i.second.second
+             << " unit value:" << unit << endl;
     }
-
-};
-
-bool Compare(Item i1, Item i2){
-    return i1.per_unit_value > i2.per_unit_value;
-}
-
-void FractionalKnapsack(vector<Item> itemList, int n, int W){
-    //find the maximum the profit
-    sort(itemList.begin(), itemList.end(), Compare );
-    for(Item i: itemList) i.display();
 
     double profit = 0;
     int i = 0;
     cout << "\nSelected items:" << endl;
-    while(W > 0 && i < n){
-        if( itemList[i].weight <= W ){
-            //we can take the entire item
-            profit += itemList[i].value;
-            W = W - itemList[i].weight;
-            itemList[i].display();
-        }else{
-            //knapsack does not have enough capacity
-            //we have to take fractional amount
+
+    while (W > 0 && i < items.size())
+    {
+        double weight = items[i].second.first;
+        double value = items[i].second.second;
+        double unit = value / weight;
+
+        if (weight <= W)
+        {
+            // take whole item
+            profit += value;
+            W -= weight;
+            cout << "name:" << items[i].first
+                 << " w:" << weight
+                 << " v:" << value
+                 << " unit value:" << unit << endl;
+        }
+        else
+        {
+            // take fractional part
             double taken_weight = W;
-            double p = taken_weight * itemList[i].per_unit_value;
+            double p = taken_weight * unit;
             profit += p;
             W = 0;
-            string name = itemList[i].name;
-            double unit_value = itemList[i].per_unit_value;
-            cout<<"name:"<<name<<" w:"<<taken_weight<<" v:"<<p<<" unit value:"<<unit_value<<endl;
+            cout << "name:" << items[i].first
+                 << " w:" << taken_weight
+                 << " v:" << p
+                 << " unit value:" << unit << endl;
         }
         i++;
     }
 
-    cout << "Maximum profit:" << profit << endl;
+    cout << "\nMaximum profit: " << profit << endl;
 }
 
-int main(){
-    vector<Item> items = {Item("Rice", 5, 300), Item("Saffron", 2, 8000),
-                        Item("Salt", 10 , 200), Item("Sugar", 4, 400)
-    };
+int main()
+{
+    vector<pair<string, pair<double, double>>> items = {
+        {"Rice", {5, 300}},
+        {"Saffron", {2, 8000}},
+        {"Salt", {10, 200}},
+        {"Sugar", {4, 400}}};
+
     int W = 24; // knapsack capacity
-    int n = items.size(); // number of items
-    FractionalKnapsack(items, n, W);
+    FractionalKnapsack(items, W);
 }

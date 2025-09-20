@@ -1,51 +1,87 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-class Activity{
-public:
-    int start_time, finish_time;
-    Activity(int s, int f): start_time(s), finish_time(f){}
-    void display(){
-        cout<<" start time: "<<start_time<<", finish time: "<< finish_time<<endl;
-    }
-};
-bool Compare(Activity a1, Activity a2){
-    return a1.finish_time  < a2.finish_time;
-}
+// Function to perform activity selection
+void activitySelection(vector<pair<int,int>> &activities) {
+    // Sort activities by finish time
+    sort(activities.begin(), activities.end(), [](pair<int,int> a, pair<int,int> b){
+        return a.second < b.second;
+    });
 
-void ActivitySelection(vector<Activity> activityList){
-    //find the maximum number of activities
-    //sort according to earliest time
-    sort(activityList.begin(), activityList.end(), Compare);
-    for(Activity a : activityList ) a.display();
+    cout << "Sorted activities (by finish time):\n";
+    for(auto a : activities)
+        cout << "(" << a.first << ", " << a.second << ")\n";
 
-    vector<Activity> selected; //to store selected activities
-    int l = 0; //last chosen activity
-    selected.push_back(activityList[0]);//choose the 1st activity
+    cout << "\nSelected activities:\n";
+    cout << "(" << activities[0].first << ", " << activities[0].second << ")\n";
 
-    int cnt = 1;
-    for(int m = 1; m < activityList.size() ; m++ ){
-            //+2 --> 2 consecutive activities must have at least 2 hr time gap
-        if(activityList[m].start_time >= activityList[l].finish_time + 2){
-            selected.push_back(activityList[m]);
-            l = m;
-            cnt++;
+    int last = 0; // last selected activity index
+    int count = 1;
+
+    for(int i = 1; i < activities.size(); i++) {
+        if(activities[i].first >= activities[last].second) {
+            cout << "(" << activities[i].first << ", " << activities[i].second << ")\n";
+            last = i;
+            count++;
         }
     }
 
-    cout<< "\nMaximum no of activities: " << cnt << endl;
-    cout << "Selected activity list: " << endl;
-    for(Activity a : selected)
-        a.display();
-
+    cout << "\nMaximum number of activities: " << count << endl;
 }
 
-int main(){
-    vector<Activity> activities = {Activity(9, 12), Activity(8, 10),
-                Activity(9, 10), Activity(13, 15), Activity(11, 13),
-                Activity(10, 12)
+int main() {
+    vector<pair<int,int>> activities = {
+        {8,12}, {9,10}, {14,16}, {11,13}, {9,11}, {10,12}
     };
-    ActivitySelection(activities);
+
+    activitySelection(activities); // function call
+
+    return 0;
 }
+/*
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Activity {
+    int start, finish;
+};
+
+// Function to perform activity selection
+void activitySelection(vector<Activity> &activities) {
+    // Sort activities by finish time
+    sort(activities.begin(), activities.end(), [](Activity a, Activity b){
+        return a.finish < b.finish;
+    });
+
+    cout << "Sorted activities (by finish time):\n";
+    for(auto a : activities)
+        cout << "(" << a.start << ", " << a.finish << ")\n";
+
+    cout << "\nSelected activities:\n";
+    cout << "(" << activities[0].start << ", " << activities[0].finish << ")\n";
+
+    int last = 0; // last selected activity index
+    int count = 1;
+
+    for(int i = 1; i < activities.size(); i++) {
+        if(activities[i].start >= activities[last].finish) {
+            cout << "(" << activities[i].start << ", " << activities[i].finish << ")\n";
+            last = i;
+            count++;
+        }
+    }
+
+    cout << "\nMaximum number of activities: " << count << endl;
+}
+
+int main() {
+    vector<Activity> activities = {
+        {8,12}, {9,10}, {14,16}, {11,13}, {9,11}, {10,12}
+    };
+
+    activitySelection(activities); // function call
+
+    return 0;
+}
+*/
+
